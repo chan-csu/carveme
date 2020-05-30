@@ -117,7 +117,7 @@ def main(mode, noheuristics=False, nothermo=False, allow_unbalanced=False, allow
         print('Unrecognized option:', mode)
 
 
-if __name__ == '__main__':
+def command_line():
     parser = argparse.ArgumentParser(description="Generate universal model to use with CarveMe")
 
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -203,3 +203,5 @@ if __name__ == '__main__':
          taxa=taxa,
          outputfile=args.output)
 
+if __name__ == "__main__":
+    command_line()

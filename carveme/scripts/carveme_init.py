@@ -11,7 +11,7 @@ import os
 from carveme import project_dir
 
 
-if __name__ == '__main__':
+def command_line():
 
     source_url = 'https://github.com/cdanielmachado/carveme/raw/master/carveme/'
 
@@ -58,3 +58,6 @@ if __name__ == '__main__':
         print('Failed to run diamond. Please make sure diamond is installed and add it to your PATH.')
     else:
         print('Done.')
+
+if __name__ == '__main__':
+    command_line()

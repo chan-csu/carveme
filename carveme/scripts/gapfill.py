@@ -75,7 +75,7 @@ def main(inputfile, media, mediadb=None, universe=None, universe_file=None, outp
         print('Done.')
 
 
-if __name__ == '__main__':
+def command_line():
     parser = argparse.ArgumentParser(description="GapFill a metabolic model for a given set of media")
 
     parser.add_argument('input', metavar='INPUTFILE',
@@ -116,3 +116,6 @@ if __name__ == '__main__':
          flavor=flavor,
          exchange_format=args.exchange_format,
          verbose=args.verbose)
+
+if __name__ == '__main__':
+    command_line()

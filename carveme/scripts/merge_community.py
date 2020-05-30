@@ -51,7 +51,7 @@ def main(inputfiles, flavor=None, split_pool=False, no_biomass=False, init=None,
     save_cbmodel(merged, outputfile, flavor=flavor)
 
 
-if __name__ == '__main__':
+def command_line():
     parser = argparse.ArgumentParser(description="Merge single species models into a microbial community model")
 
     parser.add_argument('input', metavar='INPUTFILES', nargs='+', help="SBML input files (single species)")
@@ -96,5 +96,5 @@ if __name__ == '__main__':
          ext_comp_id=args.ext,
          outputfile=args.output)
 
-
-
+if __name__ == '__main__':
+    command_line():

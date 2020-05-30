@@ -242,7 +242,7 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
         print('Done.')
 
 
-if __name__ == '__main__':
+def command_line():
 
     parser = argparse.ArgumentParser(description="Reconstruct a metabolic model using CarveMe",
                                      formatter_class=argparse.RawTextHelpFormatter)
@@ -393,3 +393,6 @@ if __name__ == '__main__':
 
         p = Pool()
         p.map(f, args.input)
+
+if __name__ == '__main__':
+    command_line()

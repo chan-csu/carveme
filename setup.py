@@ -14,14 +14,6 @@ requirements = [
     "requests>=2.18"
 ]
 
-script_list = [
-    "scripts/carveme_init",
-    "scripts/build_universe",
-    "scripts/carve",
-    "scripts/gapfill",
-    "scripts/merge_community"
-]
-
 included_files = {
     'carveme': [
         'config.cfg',
@@ -44,7 +36,6 @@ setup(
     author="Daniel Machado, Sergej Andrejev",
     author_email='cdanielmachado@gmail.com',
     url='https://github.com/cdanielmachado/carveme',
-    scripts=script_list,
 #    package_dir={'':'src'},
     packages=find_packages(),
     include_package_data=True,
@@ -55,12 +46,19 @@ setup(
     keywords='carveme',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
-        'Environment :: Console', 
+        'Environment :: Console',
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
         'Programming Language :: Python :: 2.7',
         'License :: OSI Approved :: Apache Software License',
     ],
+    entry_points = {
+        'console_scripts': ['carve=carveme.scripts.carve:command_line',
+                            'carveme_init=carveme.scripts.carveme_init:command_line',
+                            'build_universe=carveme.scripts.build_universe:command_line',
+                            'gapfill=carveme.scripts.gapfill:command_line',
+                            'merge_community=carveme.scripts.merge_community:command_line'
+                            ]},
     setup_requires=['setuptools_scm']
 #    test_suite='tests',
 #    tests_require=test_requirements,
