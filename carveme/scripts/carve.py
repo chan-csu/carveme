@@ -17,7 +17,9 @@ import pandas as pd
 from framed.io.sbml import save_cbmodel, sanitize_id
 from multiprocessing import Pool
 from glob import glob
-
+from configparser import ConfigParser
+from framed import set_default_solver, set_default_parameter, Parameter
+from framed.solvers import solver_instance
 
 def build_model_id(name):
     model_id = sanitize_id(name)
@@ -29,7 +31,7 @@ def build_model_id(name):
 def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, universe=None, universe_file=None,
          ensemble_size=None, verbose=False, debug=False, flavor=None, gapfill=None, blind_gapfill=False, init=None,
          mediadb=None, default_score=None, uptake_score=None, soft_score=None, soft=None, hard=None, reference=None,
-         ref_score=None, recursive_mode=False):
+         ref_score=None, recursive_mode=False, specified_solver=None, feas_tol=None, opt_tol=None, int_feas_tol=None):
 
     if recursive_mode:
         model_id = os.path.splitext(os.path.basename(inputfile))[0]
@@ -120,6 +122,19 @@ def main(inputfile, input_type='protein', outputfile=None, diamond_args=None, un
             universe_file = "{}{}universe_{}.xml.gz".format(project_dir, config.get('generated', 'folder'), universe)
         else:
             universe_file = project_dir + config.get('generated', 'default_universe')
+
+    # change default solver if a solver is specified in the input
+    if specified_solver is not None:
+
+        if specified_solver != config.get('solver', 'default_solver'):
+            set_default_solver(specified_solver)
+
+    params_to_set = {'FEASIBILITY_TOL': feas_tol,
+                     'OPTIMALITY_TOL': opt_tol,
+                     'INT_FEASIBILITY_TOL': int_feas_tol}
+    for key,value in params_to_set.items():
+        if value is not None:
+            set_default_parameter(getattr(Parameter, key), value)
 
     try:
         universe_model = load_cbmodel(universe_file, flavor=config.get('sbml', 'default_flavor'))
@@ -302,6 +317,11 @@ def command_line():
 
     parser.add_argument('--blind-gapfill', action='store_true', help=argparse.SUPPRESS)
 
+    parser.add_argument('--solver', type=str, dest='specified_solver', default=None, help=argparse.SUPPRESS)
+    parser.add_argument('--feas-tol', type=float, dest='feas_tol', default=None, help=argparse.SUPPRESS)
+    parser.add_argument('--opt-tol', type=float, dest='opt_tol', default=None, help=argparse.SUPPRESS)
+    parser.add_argument('--int-feas-tol', type=float, dest='int_feas_tol', default=None, help=argparse.SUPPRESS)
+
     args = parser.parse_args()
 
     if args.gapfill and args.ensemble:
@@ -361,7 +381,11 @@ def command_line():
             soft=args.soft,
             hard=args.hard,
             reference=args.reference,
-            ref_score=args.reference_score
+            ref_score=args.reference_score,
+            specified_solver=args.specified_solver,
+            feas_tol=args.feas_tol,
+            opt_tol=args.opt_tol,
+            int_feas_tol=args.int_feas_tol
         )
 
     else:
@@ -388,11 +412,15 @@ def command_line():
                 hard=args.hard,
                 reference=args.reference,
                 ref_score=args.reference_score,
-                recursive_mode=True
+                recursive_mode=True,
+                specified_solver=args.specified_solver,
+                feas_tol=args.feas_tol,
+                opt_tol=args.opt_tol,
+                int_feas_tol=args.int_feas_tol
             )
 
         p = Pool()
         p.map(f, args.input)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     command_line()
